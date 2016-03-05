@@ -67,3 +67,35 @@ predict(mod_new,bill_gates)
 
 
 
+
+#RMSE
+#sqrt(sum(residuals(mod_new)^2) / length(training$id))
+#Quiz
+library("caret")
+data=read.csv("https://s3-ap-northeast-1.amazonaws.com/ldktorage/coursera_dato/home_data.csv")
+#1.
+data1=subset(data,select=c(price,zipcode))
+meanbyzip=aggregate(data1[,1], by=list(data1$zipcode),FUN=mean)
+max_zip=max(meanbyzip[,2])
+
+#2
+data2=subset(data,sqft_living>2000 & sqft_living<=4000,select = id:sqft_lot15)
+
+#3
+my_features = c('bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'zipcode')
+advanced_features = c('bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'zipcode',
+    'condition', # condition of house				
+    'grade', # measure of quality of construction				
+    'waterfront', # waterfront property				
+    'view', # type of view				
+    'sqft_above', # square feet above ground				
+    'sqft_basement', # square feet in basement				
+    'yr_built', # the year built				
+    'yr_renovated', # the year renovated				
+    'lat', 'long', # the lat-long of the parcel				
+    'sqft_living15', # average sq.ft. of 15 nearest neighbors 				
+    'sqft_lot15')
+
+inTrain=createDataPartition(data$price,p=0.8,list=F)
+training=data[inTrain,]
+testing=data[-inTrain,]
