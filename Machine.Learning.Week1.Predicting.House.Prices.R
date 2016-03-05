@@ -82,20 +82,35 @@ max_zip=max(meanbyzip[,2])
 data2=subset(data,sqft_living>2000 & sqft_living<=4000,select = id:sqft_lot15)
 
 #3
-my_features = c('bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'zipcode')
-advanced_features = c('bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'zipcode',
-    'condition', # condition of house				
-    'grade', # measure of quality of construction				
-    'waterfront', # waterfront property				
-    'view', # type of view				
-    'sqft_above', # square feet above ground				
-    'sqft_basement', # square feet in basement				
-    'yr_built', # the year built				
-    'yr_renovated', # the year renovated				
-    'lat', 'long', # the lat-long of the parcel				
-    'sqft_living15', # average sq.ft. of 15 nearest neighbors 				
-    'sqft_lot15')
+my_features = c('price','bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'zipcode')
+advanced_features = c('price','bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'zipcode',
+                      'condition', # condition of house  			
+                      'grade', # measure of quality of construction				
+                      'waterfront', # waterfront property				
+                      'view', # type of view				
+                      'sqft_above', # square feet above ground				
+                      'sqft_basement', # square feet in basement				
+                      'yr_built', # the year built				
+                      'yr_renovated', # the year renovated				
+                      'lat', 'long', # the lat-long of the parcel				
+                      'sqft_living15', # average sq.ft. of 15 nearest neighbors 				
+                      'sqft_lot15')
+my_data=data[,my_features]
+ad_data=data[,advanced_features]
+set.seed(0)
+my_inTrain=createDataPartition(my_data$price,p=0.8,list=F)
+my_training=my_data[my_inTrain,]
+my_testing=my_data[-my_inTrain,]
 
-inTrain=createDataPartition(data$price,p=0.8,list=F)
-training=data[inTrain,]
-testing=data[-inTrain,]
+ad_inTrain=createDataPartition(ad_data$price,p=0.8,list=F)
+ad_training=ad_data[ad_inTrain,]
+ad_testing=ad_data[-ad_inTrain,]
+
+my_mod=lm(price ~ ., data=my_training)
+my_pred=predict(my_mod,newdata=my_testing)
+rmse1=postResample(my_pred,my_testing$price)[[1]]
+
+ad_mod=lm(price ~ ., data=ad_training)
+ad_pred=predict(ad_mod,newdata=ad_testing)
+rmse2=postResample(ad_pred,ad_testing$price)[[1]]
+rmse1-rmse2
