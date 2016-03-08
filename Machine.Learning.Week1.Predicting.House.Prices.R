@@ -75,7 +75,8 @@ library("caret")
 data=read.csv("https://s3-ap-northeast-1.amazonaws.com/ldktorage/coursera_dato/home_data.csv")
 #1.
 data1=subset(data,select=c(price,zipcode))
-meanbyzip=aggregate(data1[,1], by=list(data1$zipcode),FUN=mean)
+#meanbyzip=aggregate(data1[,1], by=list(data1$zipcode),FUN=mean)
+meanbyzip=aggregate(price~zipcode,data1,mean) #Calculate mean by group
 max_zip=max(meanbyzip[,2])
 
 #2
