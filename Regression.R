@@ -31,7 +31,8 @@ RSS=0
 for (i in 1:17384) {
   RSS=RSS+((predicted_output[i,]-avg)^2)
 }
-anova(mod)
+#sum((predict(lm1) - mean(movies$score))^2) 
+#anova(mod)
 
 #800000=intercept+slope*sqft
 estimated_sqft=(800000-intercept)/slope
