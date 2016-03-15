@@ -71,23 +71,28 @@ for (i in 1:4229) {
 #RSS=7.184082e+13
 
 
-training=read.csv("kc_house_train_data.csv")
-testing=read.csv("kc_house_test_data.csv")
-bedrooms_squared=training$bedrooms^2
-bed_bath_rooms=training$bedrooms*training$bathrooms
-log_sqft_living = log(training$sqft_living)
-lat_plus_long=training$lat+training$long
-training=cbind(training,bedrooms_squared,bed_bath_rooms,log_sqft_living,lat_plus_long)
-mean_bedrooms_squared=colMeans(training[,c(22:25)])
+data=read.csv("kc_house_data.csv")
+bedrooms_squared=(data$bedrooms)^2
+bed_bath_rooms=(data$bedrooms)*(data$bathrooms)
+log_sqft_living = log(data$sqft_living)
+lat_plus_long=data$lat+data$long
+new_data=cbind(data,bedrooms_squared,bed_bath_rooms,log_sqft_living,lat_plus_long)
+set.seed(0)
+inTrain=createDataPartition(new_data$price,p=0.6,list=F)
+training=new_data[inTrain,]
+testing=new_data[-inTrain,]
+mean_bedrooms_squared=colMeans(testing[,c(22:25)])
 
 mod1=lm(price~sqft_living+bedrooms+bathrooms+lat+long,data=training)
 mod2=lm(price~sqft_living+bedrooms+bathrooms+lat+long+bed_bath_rooms,data=training)
-mod3=lm(price~sqft_living+bedrooms+bathrooms+lat+long+bed_bath_rooms+
-          bedrooms_squared+log_sqft_living+lat_plus_long,data=training)
+mod3=lm(price~sqft_living+bedrooms+bathrooms+lat+long+bed_bath_rooms+bedrooms_squared+log_sqft_living+lat_plus_long,data=training)
 
 pred1=predict(mod1,testing)
 pred2=predict(mod2,testing)
 pred3=predict(mod3,testing)
-sum(pred1 - mean(testing$price)^2) 
-sum(pred2 - mean(testing$price)^2) 
-sum(pred3 - mean(testing$price)^2) 
+
+mean_price=mean(testing$price)
+sum((pred1 - mean_price)^2) 
+sum((pred2 - mean_price)^2) 
+sum((pred3 - mean_price)^2) 
+
