@@ -1,0 +1,27 @@
+library(qdap)
+products=read.csv('amazon_baby.csv',na.strings = "",nrows = 1419,colClasses="character")
+products=products[complete.cases(products),]
+selected_words = c("awesome", "great", "fantastic", "amazing", "love", 'horrible', 'bad', 'terrible', 'awful', 'wow', 'hate')
+
+wc=function(word,word_counts){
+  if(word %in% word_counts[,1]){
+    return(word_counts[word_counts[,1]==word,2])
+  }
+  else return(0)
+}
+
+
+for(word in selected_words){
+  for (i in 1:nrow(products)) {
+    count_word=wfdf(products[i,2])
+    products[i,word]=(apply(count_word,2,function(x,y) wc(word,count_word)))[1]
+  }
+  
+}
+
+
+a=products[1413,]
+b=wfdf(a[,2])
+products[i,word]=(apply(count_word,2,function(x,y) wc("great",count_word))
+
+str_replace_all(a, "[^[:alnum:]]", " ")
