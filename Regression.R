@@ -96,3 +96,33 @@ sum((pred1 - mean_price)^2)
 sum((pred2 - mean_price)^2) 
 sum((pred3 - mean_price)^2) 
 
+
+
+import pandas 
+import numpy as np
+import matplotlib.pylab as plt
+from sklearn.linear_model import Ridge
+sales=pandas.read_csv('C:\Users\wli\Downloads\kc_house_train_data.csv')
+test=pandas.read_csv('C:\Users\wli\Downloads\kc_house_test_data.csv')
+#training_new=training['sqft_living']
+
+def polynomial_frame(feature, degree):
+    poly_frame=pandas.DataFrame()
+    poly_frame['power_1']=feature
+    
+    if degree>1:
+        for power in range(2,degree+1):
+            name='power_'+str(power)
+            poly_frame[name]=feature.apply(lambda x: x**power)
+    return poly_frame
+
+training=polynomial_frame(sales['sqft_living'],15)
+training['price']=sales['price']
+my_features=['power_1','power_2','power_3','power_4','power_5','power_6',
+'power_7','power_8','power_9','power_10','power_11','power_12',
+'power_13','power_14','power_15']
+
+model=Ridge(alpha=1000,normalize=False)
+model.fit(training[my_features],training['price'])
+
+model.
